@@ -17,6 +17,7 @@ class Body extends Component {
       }
         absolute_path = this.props.files.absolute_path;
         file.append('path', content_path);
+        file.append('user_folder', this.props.files.user_folder);
         file.append('absolutepath', absolute_path);
         file.append('myfile', event.target.files[0]);
         this.props.uploadFile(file);

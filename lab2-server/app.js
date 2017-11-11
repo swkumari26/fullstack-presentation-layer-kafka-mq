@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -9,6 +8,7 @@ var express = require('express')
   , path = require('path')
   , index = require('./routes/index')
   , users = require('./routes/user')
+  , uploadData = require('./routes/uploadData')
   , passport = require('passport')
   ,	cors = require('cors')
   , mongoSessionURL = "mongodb://localhost:27017/sessions"
@@ -47,7 +47,7 @@ app.use(expressSessions({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use('/user', users);
-
+app.use('/uploadData', uploadData);
 // development only
 //catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -60,14 +60,11 @@ app.use(function (err, req, res, next) {
     // set locals, only providing error in development
     res.locals.message = err.message;
     res.locals.error = req.app.get('env') === 'development' ? err : {};
-
     console.log(err);
-
     // render the error page
     res.status(err.status || 500);
     res.json('error');
 });
-
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

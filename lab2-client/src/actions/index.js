@@ -237,23 +237,23 @@ export const loginUser = (user,signIn) => {
 	}
 }
 
-export const uploadFile = (file,tree) =>{
+export const uploadFile = (file) =>{
     console.log("file received in action",file);
   return dispatch => {
     dispatch(uploadRequest());
        return fetch(`${api}/uploadData/uploadFile`, {
             method: 'POST',  
-            credentials:'include',                      
+            credentials:'include',                  
             body: file
             })
             .then(checkHttpStatus)
             .then(parseJSON)     
             .then(response => {
                 try {
-                    dispatch(uploadSuccess({response:{
-                                result:response.result,
-                                contentMetaData:response.contentMetaData
-                    }}));             
+                    dispatch(loginUserSuccess({response:{
+                                user:response.user,
+                                statusText:response.statusText
+                    }}));            
                 } catch (e) {
                     dispatch(uploadFailure({
                         response: {
@@ -269,9 +269,9 @@ export const uploadFile = (file,tree) =>{
         }
   }
 
-export const createFolder = (path,name,absolutePath) =>{
+export const createFolder = (path,userFolder) =>{
     console.log("folder path received in action",path);
-    console.log("absolute path received in action",absolutePath);
+    console.log("userFolder received in action",userFolder);
   return dispatch => {
     dispatch(uploadRequest());
        return fetch(`${api}/uploadData/createFolder`, {
@@ -281,16 +281,16 @@ export const createFolder = (path,name,absolutePath) =>{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },               
-            body: JSON.stringify({"folderPath":path,"absolutePath":absolutePath,"content_name":name})
+            body: JSON.stringify({"folderPath":path,"userFolder":userFolder})
             })
             .then(checkHttpStatus)
             .then(parseJSON)       
             .then(response => {
                 try {
-                    dispatch(uploadSuccess({response:{
-                                result:response.result,
-                                contentMetaData:response.contentMetaData
-                    }}));            
+                    dispatch(loginUserSuccess({response:{
+                                user:response.user,
+                                statusText:response.statusText
+                    }}));           
                 } catch (e) {
                     dispatch(uploadFailure({
                         response: {
@@ -311,7 +311,7 @@ export const createFolder = (path,name,absolutePath) =>{
         }
   }
 
-export const deleteContent = (path) =>{
+export const deleteContent = (path,user_folder) =>{
     console.log("Path received in action",path);
   return dispatch => {
     dispatch(uploadRequest());
@@ -322,16 +322,16 @@ export const deleteContent = (path) =>{
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },               
-            body: JSON.stringify({"path":path})
+            body: JSON.stringify({"path":path,"user_folder":user_folder})
             })
             .then(checkHttpStatus)
             .then(parseJSON)       
             .then(response => {
                 try {
-                    dispatch(uploadSuccess({response:{
-                                result:response.result,
-                                contentMetaData:response.contentMetaData
-                    }}));            
+                    dispatch(loginUserSuccess({response:{
+                                user:response.user,
+                                statusText:response.statusText
+                    }}));           
                 } catch (e) {
                     dispatch(uploadFailure({
                         response: {
@@ -486,7 +486,8 @@ var tree = {
     created_on:null,
     members:null,
     created_by:null,
-    content_path:null
+    content_path:null,
+    user_folder:result.id
   }
 };
 
@@ -521,9 +522,13 @@ function buildTree(parts,content) {
   tree[currContentName].created_on = content.created_on;
   tree[currContentName].created_by = content.created_by;
   tree[currContentName].star = content.star;
+  tree[currContentName].user_folder = content.user_folder;
 }
 if(result.contents){
 result.contents.map((content)=> {
+  content.content_name = content.content_name.replace(result.id+'/','');  
+  content.content_name = content.content_name.replace(result.id,'');  
+  if(content.content_name)
   buildTree(content.content_name.split('/'),content);
 });}
 

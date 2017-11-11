@@ -30,11 +30,10 @@ var walkDir = function(dir, callback) {
 exports.walkUserDir = function(dir,callback){
 	var resultsSharedFinal = [];
 	var directoryName = path.join(__dirname,'..','dropbox');
-	console.log("directory to parse:",directoryName);
 		walkDir(path.join(directoryName,''+dir),function(err,results){
 						if(err) {console.log("error is:",err);callback(err,null);}
 						else
-						{	console.log("results:",results);
+						{	
 						var NewdirectoryName = path.join(directoryName,''+dir);
 						NewdirectoryName = NewdirectoryName.replace(/\\\\/g, '\\');
 						for (var i=0;i<results.length;i++)

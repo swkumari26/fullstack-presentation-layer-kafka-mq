@@ -23,7 +23,6 @@ var collection = function(name){
       throw new Error('Must connect to Mongo before calling "collection"');
     } 
     return db.collection(name);
-  
 };
 /**
  * Returns the collection search results
@@ -47,18 +46,14 @@ exports.findData=function(collName,queryParam,callback){
               callback(e,{});
           }
 };	
-function combine_ids(ids) {
-	   return (ids.length ? "['" + ids.join("','") + "']" : "");
-	}
+
 exports.findDataWithIn=function(collName,queryParam,callback){
-//		queryParam=combine_ids(queryParam);
-		console.log("QueryParam",queryParam);
+		console.log("QueryParam in find data with",queryParam);
 	  try{
           	connect(mongoURL, function(){
               console.log('Connected to mongo in find at: ' + mongoURL);
               var coll = collection(collName);
               coll.find({content_name: { $in: queryParam }}).toArray( function (err, result) {
-                  console.log("after in",result,"err",err);
             	  if (result) {
             		  
                       callback(null,result);
@@ -95,5 +90,25 @@ exports.insertData=function(collName,queryParam,callback){
               callback(e,{});
           }
 };	
+exports.removeData=function(collName,queryParam,callback){
+	console.log("QueryParam in remove data :",queryParam);
+  try{
+      	connect(mongoURL, function(){
+          console.log('Connected to mongo in find at: ' + mongoURL);
+          var coll = collection(collName);
+          coll.remove(queryParam, function (err, result) {
+        	  if (result) {
+        		  
+                  callback(null,result);
+              } else {
+                  callback(err, result);
+              }            	
+          })
+      	});
+	  }
+      catch (e){
+          callback(e,{});
+      }
+};
 exports.connect = connect;
 exports.collection = collection;

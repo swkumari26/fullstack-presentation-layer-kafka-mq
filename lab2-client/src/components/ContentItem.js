@@ -25,7 +25,7 @@ state = {modalIsOpen:false}
           folderPath = this.props.user.id+'/'+this.props.parentpath.absolute_path+event.target.value ;
         }
           var absolutePath = this.props.parentpath.absolute_path+event.target.value+'/'
-          this.props.createFolder(folderPath,event.target.value,absolutePath);
+          this.props.createFolder(folderPath,this.props.parentpath.user_folder,absolutePath);
         }
       }               
 render(){  
@@ -33,10 +33,11 @@ render(){
   const{modalIsOpen} = this.state;
   let displayIcon,buttonOptions
   let link = '/home/'+name;
-  let pathWithName;
-  if(files)
+  let pathWithName,user_folder;
+  if(parentpath)
   {
-  pathWithName = files.content_path 
+  pathWithName = parentpath.absolute_path+name;
+  user_folder = parentpath.user_folder; 
   }
     if (name)
     {
@@ -77,7 +78,7 @@ render(){
           <button className="btn btn-default btn-sm" onClick={(e) => {e.preventDefault();getAccounts();this.setState({modalIsOpen:true});}}>Share</button>
           {
           (files.created_by===user.id)?
-          (<button className="btn btn-default btn-sm" onClick={(e) => {e.preventDefault(); deleteContent(pathWithName); }}>Delete</button>):""
+          (<button className="btn btn-default btn-sm" onClick={(e) => {e.preventDefault(); deleteContent(pathWithName,user_folder); }}>Delete</button>):""
           }
           <a className="btn btn-default btn-sm" href={`{api}/dropbox/`+pathWithName} download>Download</a>
           <button className="btn btn-default btn-sm" onClick={(e) => {e.preventDefault(); starContent(pathWithName); }}>Star</button>
@@ -100,7 +101,7 @@ render(){
           <button className="btn btn-default btn-sm" onClick={(e) => {e.preventDefault();getAccounts();this.setState({modalIsOpen:true});}}>Share</button>
           {
           (files.created_by===user.id)?
-          (<button className="btn btn-default btn-sm" onClick={(e) => {e.preventDefault(); deleteContent(pathWithName); }}>Delete</button>):""
+          (<button className="btn btn-default btn-sm" onClick={(e) => {e.preventDefault(); deleteContent(pathWithName,user_folder); }}>Delete</button>):""
           }          
           <button className="btn btn-default btn-sm" onClick={(e) => {e.preventDefault(); starContent(pathWithName); }}>Star</button>
           </div>
