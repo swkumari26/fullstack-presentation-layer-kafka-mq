@@ -4,6 +4,57 @@ var mongo = require("./mongo")
 	,fs = require('fs')
 	,rimraf		= require('rimraf')
 	,listDir = require("./listDir");
+exports.createConnectionPool = function(callback){
+	  if(!mongo.connectionsList)
+	  {
+	  	console.log("controllder here");
+	  	mongo.createConnectionPool(function(connectionsList){
+	  		console.log("connection poil length",connectionsList.length);
+	  		callback();
+	  	});
+	  }
+	  else{
+		  console.log("connection else part poil length",mongo.connectionsList.length);
+		  callback();
+	  }
+}
+exports.markStar = function(msg, callback){
+    var res = {}, queryParam;	
+	console.log("path received",msg.path);
+	var content_name = msg.user_folder+'/'+msg.path;
+	queryParam = {content_name:content_name};
+        mongo.updateData('contents',queryParam,function(err,user){
+                   if (err) {
+                	   res.code = "401";
+                	   res.value = "Error occured while updating star content in database";
+                	   callback(null,res);
+                   }
+                   else{
+				listDir.walkUserDir(msg.user.id,function(err,results){
+						if(!results){
+							console.log("adding empty content to user");
+							msg.user.contents = [];
+							res.value = msg.user;
+							callback(null,res);
+						}
+						else{
+						console.log("searching for content");
+						mongo.findDataWithIn('contents',results,function(err,contents){
+							if(err) res.code = "401";
+							else {
+								if(contents)
+								msg.user.contents = contents;
+								else
+								msg.user.contents = [];
+								}
+				         	   res.value=msg.user;   
+				         	   callback(null,res);
+						});
+					}
+				});
+                   }
+         	   });
+};
 
 exports.createFolder = function(msg, callback){
     var res = {}, queryParam;
@@ -236,7 +287,7 @@ exports.login = function(msg, callback){
 				         	   callback(null,res);
 						});
 					}
-				}); 
+				});         	   
              }
             else{
          	   res.code = "401";

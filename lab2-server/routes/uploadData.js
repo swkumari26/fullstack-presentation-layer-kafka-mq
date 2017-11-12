@@ -115,7 +115,7 @@ router.post('/shareContent', isLoggedIn, function(req, res){
 });
 
 router.post('/markStar', isLoggedIn, function(req, res){
-	kafka.make_request('shareContent_topic',{email:req.user.email,path:req.body.path}, function(err,result){
+	kafka.make_request('markStar_topic',{user:req.user,path:req.body.path}, function(err,result){
         if(err){
         	console.log("error in Star toggle",err);
             throw err;
@@ -126,7 +126,7 @@ router.post('/markStar', isLoggedIn, function(req, res){
             	return res.status(401).json({"statusText":result.value});
             } else {
                 console.log("Star toggled successfully");
-                return res.status(201).json({result:result.value,"statusText":"Content marked/unmarked successfully!"});
+                return res.status(201).json({user:result.value,"statusText":"Content marked/unmarked successfully!"});
             }
         }
         });	
