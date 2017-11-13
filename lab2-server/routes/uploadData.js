@@ -42,24 +42,24 @@ router.post('/uploadFile',isLoggedIn,upload.single('myfile'), function(req, res)
 	});
 })
 
-//router.get('/downloadFile', function (req, res, next) {
-//console.log("got to endpoint");
-//var filePath = path.join('dropbox',''+req.body.user,''+req.body.path);
-//glob("public/uploads/*.pdf", function (er, files) {
-//
-//    console.log("inside glob");
-//
-//    console.log("inside glob file", files);
-//    var resArr = files.map(function (file) {
-//        var fileJSON = {};
-//        fileJSON.file = 'dropbox/'+file.split('/')[2];
-//        fileJSON.cols = 2  ;
-//        return fileJSON;
-//    });
-//    console.log("response array",resArr);
-//    res.status(200).send(resArr);
-//});
-//});
+router.get('/downloadFile', function (req, res, next) {
+console.log("got to endpoint");
+var filePath = path.join('dropbox',''+req.body.user,''+req.body.path);
+glob("public/uploads/*.pdf", function (er, files) {
+
+    console.log("inside glob");
+
+    console.log("inside glob file", files);
+    var resArr = files.map(function (file) {
+        var fileJSON = {};
+        fileJSON.file = 'dropbox/'+file.split('/')[2];
+        fileJSON.cols = 2  ;
+        return fileJSON;
+    });
+    console.log("response array",resArr);
+    res.status(200).send(resArr);
+});
+});
 router.post('/createFolder', isLoggedIn, function(req, res){
 	kafka.make_request('createFolder_topic',{content_name:req.body.folderPath,user_folder:req.body.userFolder,user:req.user}, function(err,result){
         if(err){
@@ -118,6 +118,22 @@ router.post('/markStar', isLoggedIn, function(req, res){
 	kafka.make_request('markStar_topic',{user:req.user,path:req.body.path}, function(err,result){
         if(err){
         	console.log("error in Star toggle",err);
+            throw err;
+        }
+        else
+        {		
+            if (result.code === 401) {
+            	return res.status(401).json({"statusText":result.value});
+            } else {
+                console.log("Star toggled successfully");
+                return res.status(201).json({user:result.value,"statusText":"Content marked/unmarked successfully!"});
+            }
+        }
+        });	
+});
+router.post('/shareContent', isLoggedIn, function(req, res){
+	kafka.make_request('markStar_topic',{user:req.user,path:req.body.path}, function(err,result){
+        if(err){
             throw err;
         }
         else

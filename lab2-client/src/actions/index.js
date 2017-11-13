@@ -147,7 +147,7 @@ export function loginRefresh(){
                                 statusText: response.statusText
 
                     }}));  
-                    history.push('/home');                 
+                    history.push('/log');                 
                 } catch (e) {
                     dispatch(loginUserFailure({
                         response: {

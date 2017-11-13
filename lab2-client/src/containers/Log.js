@@ -52,7 +52,7 @@ if(user){username= user.lastname+','+user.firstname;}
   }
   function mapStateToProps(state) {
     return{
-        user:state.login.user[0],
+        user:state.login.user,
         isAuthenticated: state.login.isAuthenticated,
         tree:state.login.tree,
         log:state.login.log,

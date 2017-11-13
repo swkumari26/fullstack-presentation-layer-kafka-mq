@@ -283,6 +283,7 @@ exports.login = function(msg, callback){
 								else
 								user.contents = [];
 								}
+							console.log("user after content check from db",user);
 				         	   res.value=user;   
 				         	   callback(null,res);
 						});
@@ -296,6 +297,195 @@ exports.login = function(msg, callback){
             }
     });
 };
+exports.createGroup = function(msg, callback){
+    var res = {}, queryParam;
+    	mongo.insertData('contents',msg,function(err,user){
+            if (user) {
+          	   res.code = "201";
+         	   console.log("user id",user.id);
+				listDir.walkUserDir(user.id,function(err,results){
+						if(!results){
+							console.log("adding empty content to user");
+							user.contents = [];
+							res.value = user;
+							callback(null,res);
+						}
+						else{
+						console.log("searching for content");
+						mongo.findDataWithIn('contents',results,function(err,contents){
+							if(err) res.code = "401";
+							else {
+								if(contents)
+								user.contents = contents;
+								else
+								user.contents = [];
+								}
+							console.log("user after content check from db",user);
+				         	   res.value=user;   
+				         	   callback(null,res);
+						});
+					}
+				});         	   
+             }
+            else{
+         	   res.code = "401";
+         	   res.value="Invalid Credentials";
+               callback(null,res);
+            }
+    });
+};
+
+exports.deleteGroup = function(msg, callback){
+    var res = {}, queryParam;
+    	mongo.removeData('contents',msg,function(err,user){
+            if (user) {
+          	   res.code = "201";
+         	   console.log("user id",user.id);
+				listDir.walkUserDir(user.id,function(err,results){
+						if(!results){
+							console.log("adding empty content to user");
+							user.contents = [];
+							res.value = user;
+							callback(null,res);
+						}
+						else{
+						console.log("searching for content");
+						mongo.findDataWithIn('contents',results,function(err,contents){
+							if(err) res.code = "401";
+							else {
+								if(contents)
+								user.contents = contents;
+								else
+								user.contents = [];
+								}
+							console.log("user after content check from db",user);
+				         	   res.value=user;   
+				         	   callback(null,res);
+						});
+					}
+				});         	   
+             }
+            else{
+         	   res.code = "401";
+         	   res.value="Invalid Credentials";
+               callback(null,res);
+            }
+    });
+};
+
+exports.addMember = function(msg, callback){
+    var res = {}, queryParam;
+    	mongo.insertData('contents',msg,function(err,user){
+            if (user) {
+          	   res.code = "201";
+         	   console.log("user id",user.id);
+				listDir.walkUserDir(user.id,function(err,results){
+						if(!results){
+							console.log("adding empty content to user");
+							user.contents = [];
+							res.value = user;
+							callback(null,res);
+						}
+						else{
+						console.log("searching for content");
+						mongo.findDataWithIn('contents',results,function(err,contents){
+							if(err) res.code = "401";
+							else {
+								if(contents)
+								user.contents = contents;
+								else
+								user.contents = [];
+								}
+							console.log("user after content check from db",user);
+				         	   res.value=user;   
+				         	   callback(null,res);
+						});
+					}
+				});         	   
+             }
+            else{
+         	   res.code = "401";
+         	   res.value="Invalid Credentials";
+               callback(null,res);
+            }
+    });
+};
+
+exports.removeMember = function(msg, callback){
+    var res = {}, queryParam;
+    	mongo.updateData('contents',msg,function(err,user){
+            if (user) {
+          	   res.code = "201";
+         	   console.log("user id",user.id);
+				listDir.walkUserDir(user.id,function(err,results){
+						if(!results){
+							console.log("adding empty content to user");
+							user.contents = [];
+							res.value = user;
+							callback(null,res);
+						}
+						else{
+						console.log("searching for content");
+						mongo.findDataWithIn('contents',results,function(err,contents){
+							if(err) res.code = "401";
+							else {
+								if(contents)
+								user.contents = contents;
+								else
+								user.contents = [];
+								}
+							console.log("user after content check from db",user);
+				         	   res.value=user;   
+				         	   callback(null,res);
+						});
+					}
+				});         	   
+             }
+            else{
+         	   res.code = "401";
+         	   res.value="Invalid Credentials";
+               callback(null,res);
+            }
+    });
+};
+exports.shareContent = function(msg, callback){
+    var res = {}, queryParam;
+    	mongo.updateData('users',msg,function(err,user){
+            if (user) {
+          	   res.code = "201";
+         	   console.log("user id",user.id);
+				listDir.walkUserDir(user.id,function(err,results){
+						if(!results){
+							console.log("adding empty content to user");
+							user.contents = [];
+							res.value = user;
+							callback(null,res);
+						}
+						else{
+						console.log("searching for content");
+						mongo.findDataWithIn('contents',results,function(err,contents){
+							if(err) res.code = "401";
+							else {
+								if(contents)
+								user.contents = contents;
+								else
+								user.contents = [];
+								}
+							console.log("user after content check from db",user);
+				         	   res.value=user;   
+				         	   callback(null,res);
+						});
+					}
+				});         	   
+             }
+            else{
+         	   res.code = "401";
+         	   res.value="Invalid Credentials";
+               callback(null,res);
+            }
+    });
+};
+
 exports.signUp = function(msg, callback){
     var res = {}, queryParam;
     	mongo.insertData('users',msg,function(err,user){

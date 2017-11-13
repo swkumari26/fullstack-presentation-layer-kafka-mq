@@ -8,9 +8,9 @@ const initialState = {
     user:null,
     tree:null,
     contentSelected:{name:null,path:null},
-    accounts:[{id:null,firstname:null,lastname:null,email:null},{id:null,firstname:null,lastname:null,email:null}],
-    log:[],
-    star:[]
+    accounts:[{id:'user10',firstname:'user10fn',lastname:'user10ln',email:'user10@gmail.com'},{id:'user2',firstname:'user2fn',lastname:'user2ln',email:'user2@gmail.com'}],
+    log:['folder1','folder2','Hello.txt'],
+    star:['Hello.txt']
 };
 
 const login = (state = initialState, action) => {
@@ -30,8 +30,8 @@ const login = (state = initialState, action) => {
             'statusText': 'You have been successfully logged in.',
             'user':[action.user][0],
             'tree':[action.tree][0],
-            'log':[action.log][0],
-            'star':[action.star][0]
+            // 'log':[action.log][0],
+            // 'star':[action.star][0]
         };
         case SIGNUP_USER_SUCCESS:        
         return{

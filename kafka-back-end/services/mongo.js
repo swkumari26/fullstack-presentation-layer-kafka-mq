@@ -22,7 +22,7 @@ var createConnectionPool=function(callback){
 	console.log("connection pool created function");
     var i = 0;
     (function next() {
-    	if(i++<maxConnectionSize)
+    	if(i++<=maxConnectionSize)
     		{
           connect(mongoURL, function(db) {
         	  connectionsList.push(db);
@@ -34,6 +34,13 @@ var createConnectionPool=function(callback){
       })();
 }
 
+//var connectFromPool= setInterval(function(){
+//	console.log("here in pool");
+//	if(connectionsList.length>0){
+//		clearInterval(connectFromPool);
+//		return connectionsList.shift();
+//	}},0);
+
 function connectFromPool(callback){
 	var timer;
 	console.log("here in pool");
@@ -44,7 +51,7 @@ function connectFromPool(callback){
 	}else{
 		timer=setInterval(function(){
 			connectFromPool(callback);
-		},50);
+		},0);
 	}
 }
 
@@ -70,7 +77,6 @@ exports.findData=function(collName,queryParam,callback){
 		  connectFromPool(function(connection){
 			  console.log("Connect from pool ");
               var coll = collection(collName,connection);
-              console.log("collection from connection",coll);
               coll.findOne(queryParam, function (err, result) {
             	  connectRelease(connection);
                   if (result) {
@@ -79,10 +85,10 @@ exports.findData=function(collName,queryParam,callback){
                 	  
                       callback(err, result);
                   }   
-                  
-              })
-          	});
-		  }
+            
+              });
+		  });
+	  }
           catch (e){
               callback(e,{});
           }
@@ -91,10 +97,11 @@ exports.findData=function(collName,queryParam,callback){
 exports.findDataWithIn=function(collName,queryParam,callback){
 		console.log("QueryParam in find data with",queryParam);
 	  try{
-         	connect(mongoURL, function(){
+		  connectFromPool(function(connection){
              console.log('Connected to mongo in find at: ' + mongoURL);
-             var coll = collection(collName);
+             var coll = collection(collName,connection);
              coll.find({content_name: { $in: queryParam }}).toArray( function (err, result) {
+              connectRelease(connection);
            	  if (result) {
            		  
                      callback(null,result);
@@ -116,9 +123,9 @@ exports.insertData=function(collName,queryParam,callback){
 		  connectFromPool(function(connection){
 			  console.log("Connect from pool ");
               var coll = collection(collName,connection);
-              coll.update({"email":queryParam.email},queryParam,{upsert:true}, function (err, result) {
+              coll.insertOne(queryParam, {upsert:"true"},function (err, result) {              
+//              coll.update({"email":queryParam.email},queryParam,{upsert:true}, function (err, result) {
             	  connectRelease(connection);
-//              coll.insertOne(queryParam, {upsert:"true"},function (err, result) {
                   if (result) {
                       callback(null,result);
                   } else {
@@ -134,11 +141,12 @@ exports.insertData=function(collName,queryParam,callback){
 };	
 exports.updateData=function(collName,queryParam,callback){
 	  try{
-       	connect(mongoURL, function(){
+		  connectFromPool(function(connection){
            console.log('Connected to mongo in insert at: ' + mongoURL);
-           var coll = collection(collName);
+           var coll = collection(collName,connection);
 //            coll.update({"email":queryParam.email},queryParam,{upsert:"true"}, function (err, result) {
            coll.findOneAndUpdate(queryParam, {$set:{"star":1}},{upsert:"true"},function (err, result) {
+        	   connectRelease(connection);
                if (result) {
                    callback(null,result);
                } else {
@@ -155,9 +163,9 @@ exports.updateData=function(collName,queryParam,callback){
 exports.removeData=function(collName,queryParam,callback){
 	console.log("QueryParam in remove data :",queryParam);
  try{
-     	connect(mongoURL, function(){
+	 connectFromPool(function(connection){
          console.log('Connected to mongo in find at: ' + mongoURL);
-         var coll = collection(collName);
+         var coll = collection(collName,connection);
          coll.remove(queryParam,{upsert:"true"}, function (err, result) {
        	  if (result) {
        		  

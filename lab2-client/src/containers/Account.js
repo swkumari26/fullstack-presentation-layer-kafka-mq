@@ -69,14 +69,14 @@ if(user){username= user.lastname+','+user.firstname;}
       </div>
     <div className="col-lg-6 col-md-6 col-sm-6">
       <div className="jumbotron">Life events</div>
-      <h5>Number of content created {user.no_content_created} </h5>
-      <h5>Number of content deleted {user.no_content_deleted} </h5>
-      <h5>Number of content shared {user.no_content_shared} </h5>
+      <h5>Number of content created {user.no_content_create} </h5>
+      <h5>Number of content deleted {user.no_content_delete} </h5>
+      <h5>Number of content shared {user.no_content_share} </h5>
       <PieChart radius='25'
       data={[
-      { value: user.no_content_created, key: 1, color: '#E38627' },
-      { value: user.no_content_deleted, key: 2, color: '#C13C37' },
-      { value: user.no_content_shared, key: 3, color: '#6A2135' },
+      { value: user.no_content_create, key: 1, color: '#E38627' },
+      { value: user.no_content_delete, key: 2, color: '#C13C37' },
+      { value: user.no_content_share, key: 3, color: '#6A2135' },
       ]}
       />    
     </div> 
@@ -89,7 +89,7 @@ if(user){username= user.lastname+','+user.firstname;}
               Music
               </td>
               <td className="col-lg-6 col-md-6 col-sm-6 float-right">
-              
+              Rock
               </td> 
             </tr> 
         </table>   
@@ -99,7 +99,7 @@ if(user){username= user.lastname+','+user.firstname;}
               Show
               </td>
               <td className="col-lg-6 col-md-6 col-sm-6 float-right">
-              
+              Friends
               </td> 
             </tr> 
         </table> 
@@ -109,7 +109,7 @@ if(user){username= user.lastname+','+user.firstname;}
               Sports
               </td>
               <td className="col-lg-6 col-md-6 col-sm-6 float-right">
-              
+              Football
               </td> 
             </tr> 
         </table>                      

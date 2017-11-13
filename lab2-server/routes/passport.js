@@ -45,7 +45,7 @@ module.exports = function(passport) {
                     done(err,{});
                 }
                 else
-                {	console.log("\nresults:",user);
+                {	console.log("\nresults:",user.value);
                 if(user.code==="201"){
                     done(null,user.value);
                 	}
