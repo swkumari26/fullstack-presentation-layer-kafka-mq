@@ -10,6 +10,7 @@
     "connect-mongo": "^2.0.0",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
+	"mocha": "^4.0.1",
     "crypto": "^1.0.1",
     "express": "^4.16.2",
     "express-formidable": "^1.0.0",
@@ -22,4 +23,7 @@
     "passport": "^0.4.0",
     "passport-local": "^1.0.0"
   }
+  "scripts": {
+    "test": "mocha"
+  }  
 }

@@ -131,6 +131,73 @@ router.post('/markStar', isLoggedIn, function(req, res){
         }
         });	
 });
+router.post('/createGroup', isLoggedIn, function(req, res){
+	kafka.make_request('createGroup_topic',{user:req.user,name:req.body.name}, function(err,result){
+        if(err){
+        	console.log("error in Star toggle",err);
+            throw err;
+        }
+        else
+        {		
+            if (result.code === 401) {
+            	return res.status(401).json({"statusText":result.value});
+            } else {
+                console.log("Star toggled successfully");
+                return res.status(201).json({user:result.value,"statusText":"Content marked/unmarked successfully!"});
+            }
+        }
+        });	
+});
+router.post('/addMember', isLoggedIn, function(req, res){
+	kafka.make_request('addMember_topic',{user:req.user,name:req.body.name,id:req.body.id}, function(err,result){
+        if(err){
+        	console.log("error in Star toggle",err);
+            throw err;
+        }
+        else
+        {		
+            if (result.code === 401) {
+            	return res.status(401).json({"statusText":result.value});
+            } else {
+                console.log("Star toggled successfully");
+                return res.status(201).json({user:result.value,"statusText":"Content marked/unmarked successfully!"});
+            }
+        }
+        });	
+});
+router.post('/removeMember', isLoggedIn, function(req, res){
+	kafka.make_request('removeMember_topic',{user:req.user,name:req.body.name,id:req.body.id}, function(err,result){
+        if(err){
+        	console.log("error in Star toggle",err);
+            throw err;
+        }
+        else
+        {		
+            if (result.code === 401) {
+            	return res.status(401).json({"statusText":result.value});
+            } else {
+                console.log("Star toggled successfully");
+                return res.status(201).json({user:result.value,"statusText":"Content marked/unmarked successfully!"});
+            }
+        }
+        });	
+});
+router.post('/deleteGroup', isLoggedIn, function(req, res){
+	kafka.make_request('deleteGroup_topic',{user:req.user,name:req.body.name}, function(err,result){
+        if(err){
+            throw err;
+        }
+        else
+        {		
+            if (result.code === 401) {
+            	return res.status(401).json({"statusText":result.value});
+            } else {
+                console.log("Star toggled successfully");
+                return res.status(201).json({user:result.value,"statusText":"Content marked/unmarked successfully!"});
+            }
+        }
+        });	
+});
 router.post('/shareContent', isLoggedIn, function(req, res){
 	kafka.make_request('markStar_topic',{user:req.user,path:req.body.path}, function(err,result){
         if(err){
