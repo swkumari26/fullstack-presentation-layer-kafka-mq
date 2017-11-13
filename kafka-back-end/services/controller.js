@@ -3,6 +3,8 @@ var mongo = require("./mongo")
 	,mkdirp = require('mkdirp')
 	,fs = require('fs')
 	,rimraf		= require('rimraf')
+	,bcrypt = require('bcrypt')
+	,salt = bcrypt.genSaltSync(10)
 	,listDir = require("./listDir");
 exports.createConnectionPool = function(callback){
 	  if(!mongo.connectionsList)
@@ -262,8 +264,11 @@ exports.deleteContent = function(msg, callback){
 };
 exports.login = function(msg, callback){
     var res = {}, queryParam;
-    	mongo.findData('users',msg,function(err,user){
+    	queryParam = {'email':msg.email};
+    	mongo.findData('users',queryParam,function(err,user){
             if (user) {
+               if(bcrypt.compareSync(''+msg.password,''+user.password))
+               {
           	   res.code = "201";
          	   console.log("user id",user.id);
 				listDir.walkUserDir(user.id,function(err,results){
@@ -288,7 +293,15 @@ exports.login = function(msg, callback){
 				         	   callback(null,res);
 						});
 					}
-				});         	   
+				});
+               }
+
+            else{
+         	   res.code = "401";
+         	   res.value="Invalid Credentials";
+               callback(null,res);
+            }				
+
              }
             else{
          	   res.code = "401";
